@@ -1,22 +1,11 @@
-#!/usr/bin/python
+#!./env/bin/python
 
 import sys
 import nmap
 import socket
 import optparse
 
-
-def escape_color(string, status, bold):
-    attr = []
-    if status:
-        # green
-        attr.append('32')
-    else:
-        # red
-        attr.append('31')
-    if bold:
-        attr.append('1')
-    return '\x1b[%sm%s\x1b[0m' % (';'.join(attr), string)
+from utilities import escape_color
 
 
 def nmap_scan(host, port):
@@ -26,9 +15,9 @@ def nmap_scan(host, port):
     state = scanner[ip]['tcp'][int(port)]['state']
     if sys.stdout.isatty():
         if state == "open":
-            print escape_color(" [*] " + host + " tcp/" + port + " " + state, True, False)
+            print escape_color(" [*] " + host + " tcp/" + port + " " + state, "green", False)
         else:
-            print escape_color(" [*] " + host + " tcp/" + port + " " + state, False, False)
+            print escape_color(" [*] " + host + " tcp/" + port + " " + state, "red", False)
     else:
         print " [*] " + host + " tcp/" + port + " " + state
 
