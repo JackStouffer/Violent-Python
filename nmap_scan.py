@@ -1,6 +1,5 @@
 #!./env/bin/python
 
-import sys
 import nmap
 import socket
 import optparse
@@ -13,13 +12,11 @@ def nmap_scan(host, port):
     scanner.scan(host, port)
     ip = socket.gethostbyaddr(host)[-1][0]
     state = scanner[ip]['tcp'][int(port)]['state']
-    if sys.stdout.isatty():
-        if state == "open":
-            print escape_color(" [*] " + host + " tcp/" + port + " " + state, "green", False)
-        else:
-            print escape_color(" [*] " + host + " tcp/" + port + " " + state, "red", False)
+    
+    if state == "open":
+        print escape_color(" [*] " + host + " tcp/" + port + " " + state, "green")
     else:
-        print " [*] " + host + " tcp/" + port + " " + state
+        print escape_color(" [*] " + host + " tcp/" + port + " " + state, "red")
 
 
 def main():

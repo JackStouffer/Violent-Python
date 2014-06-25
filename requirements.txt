@@ -1,0 +1,4 @@
+docopt==0.6.2
+pexpect==3.2
+python-nmap==0.3.4
+wsgiref==0.1.2
