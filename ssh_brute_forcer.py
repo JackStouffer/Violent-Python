@@ -10,15 +10,19 @@
 
     Usage:
         ssh_brute_forcer.py
-        ssh_brute_forcer.py [<host> <user> <password>]
+        ssh_brute_forcer.py [<host> <user> <password_list>]
         ssh_brute_forcer.py (-h | --help)
+        ssh_brute_forcer.py --version
 
     Options:
-        --host          remote hostname
-        --user          remote username
-        --password      password file path
+        host          remote hostname
+        user          remote username
+        password_list      password file path
         -h --help       Show this screen.
         --version       Show version
+
+    Examples:
+        ./ssh_brute_forcer.py localhost root wordlist/general/common.txt
 """
 
 import pxssh
@@ -73,10 +77,10 @@ def main(arguments):
     else:
         user = arguments['<user>']
 
-    if not arguments['<password>']:
+    if not arguments['<password_list>']:
         passwdFile = raw_input("Password File: ")
     else:
-        passwdFile = arguments['<password>']
+        passwdFile = arguments['<password_list>']
 
     if host is None or passwdFile is None or user is None:
         print __doc__

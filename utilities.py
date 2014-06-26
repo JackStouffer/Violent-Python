@@ -4,6 +4,10 @@ import sys
 
 
 def escape_color(string, color, bold=False):
+    """ Escape a string with the ansi code for the provided color in
+        tty consoles.
+    """
+
     attr = []
 
     # a hacked switch statement

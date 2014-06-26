@@ -15,6 +15,7 @@
 """
 
 import pxssh
+from docopt import docopt
 from utilities import escape_color
 
 
@@ -64,4 +65,5 @@ def main():
 
 
 if __name__ == '__main__':
+    docopt(__doc__, version=0.1)
     main()

