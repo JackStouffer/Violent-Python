@@ -7,6 +7,8 @@
     finding hidden directories and files. A good number of wordlists have
     been included in this distribution for your convenience.
 
+    Don't be a moron, please don't use this for something illegal.
+
     Usage:
         url_checker.py <url> <password_file> [(-a|--async) --verbose]
         url_checker.py <url> <password_file>
@@ -14,16 +16,14 @@
         url_checker.py --version
 
     Options:
-        password_file            File to read wordlist/url patterns from
-        url             Url to run against
-        -h, --help      Display this message
-        --version   Display the version of this program
-        -a, --async     Send requests asynchronously (faster but straining on server)
+        -h, --help          Display this message
+        --version           Display the version of this program
+        -a, --async         Send requests asynchronously (faster but straining on server)
 
     Examples:
-        ./url_checker.py wordlist.txt http://www.example.com/\{\}/
-        ./url_checker.py wordlist.txt http://www.example.com/\{\}.php --async
-        ./url_checker.py wordlist.txt http://www.example.com/file.php?argument=\{\}
+        ./url_checker.py http://www.example.com/\{\} wordlist.txt
+        ./url_checker.py http://www.example.com/\{\}.php wordlist.txt  --async
+        ./url_checker.py http://www.example.com/file.php?argument=\{\} wordlist.txt
 """
 
 import requests

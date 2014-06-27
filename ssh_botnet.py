@@ -2,6 +2,9 @@
 
 """ SSH Botnet
 
+    This script logs into several different machines with ssh and sends
+    commands to each of them in tandem
+
     Don't be a moron, please don't use this for something illegal.
 
     Usage:
