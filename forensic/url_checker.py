@@ -30,7 +30,7 @@ import requests
 import time
 import grequests
 from docopt import docopt
-from utilities import escape_color
+from colorama import Fore, init
 
 
 def file_len(fname):
@@ -66,12 +66,12 @@ def main(file, url, async, verbose):
         for url in urls:
             r = requests.get(url, verify=False)
             if r.status_code != 404:
-                print escape_color("[*] " + r.url + " : " + str(r.status_code), "green")
+                print Fore.GREEN + "[*] " + r.url + " : " + str(r.status_code) + Fore.RESET
                 count += 1
 
     if verbose:
         if count == 0:
-            print escape_color("[-] No urls where found!", "red")
+            print Fore.RED + "[-] No urls where found!" + Fore.RESET
         else:
             print "Found {} urls".format(count)
 
@@ -79,5 +79,6 @@ def main(file, url, async, verbose):
 
 
 if __name__ == '__main__':
+    init()
     arguments = docopt(__doc__, version="1.0")
     main(arguments['<password_file>'], arguments['<url>'], arguments['--async'], arguments['--verbose'])

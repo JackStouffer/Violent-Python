@@ -1,3 +1,4 @@
+colorama==0.3.1
 docopt==0.6.2
 gevent==1.0.1
 greenlet==0.4.2

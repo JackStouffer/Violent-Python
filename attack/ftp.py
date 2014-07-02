@@ -26,7 +26,7 @@
 
 import ftplib
 from docopt import docopt
-from utilities import escape_color
+from colorama import Fore, init
 
 
 def brute_login(hostname, user_name, password_file, verbose=False):
@@ -66,9 +66,9 @@ def main(arguments):
         anon = anon_login(arguments['host'])
 
         if anon:
-            print escape_color('[*] ' + str(arguments['host']) + ' FTP Anonymous Logon Succeeded.', "green")
+            print Fore.GREEN + '[*] ' + str(arguments['host']) + ' FTP Anonymous Logon Succeeded.' + Fore.RESET
         else:
-            print escape_color('[-] ' + str(arguments['host']) + ' FTP Anonymous Logon Failed.', "red")
+            print Fore.RED + '[-] ' + str(arguments['host']) + ' FTP Anonymous Logon Failed.' + Fore.RESET
     elif arguments['brute']:
         if arguments['-v']:
             credentials = brute_login(arguments['<host>'], arguments['<user>'], arguments['<password_file>'], verbose=True)
@@ -76,11 +76,12 @@ def main(arguments):
             credentials = brute_login(arguments['<host>'], arguments['<user>'], arguments['<password_file>'])
 
         if credentials:
-            print escape_color('[*] FTP Logon Succeeded: ' + credentials[0] + ":" + credentials[1], "green")
+            print Fore.GREEN + '[*] FTP Logon Succeeded: ' + credentials[0] + ":" + credentials[1] + Fore.RESET
         else:
-            print escape_color('[-] No password found for that user on the FTP server.', "red")
+            print Fore.RED + '[-] No password found for that user on the FTP server.' + Fore.RESET
 
 
 if __name__ == '__main__':
+    init()
     arguments = docopt(__doc__, version="0.1")
     main(arguments)

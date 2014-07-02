@@ -19,7 +19,7 @@
 
 import pxssh
 from docopt import docopt
-from utilities import escape_color
+from colorama import Fore, init
 
 
 class Client:
@@ -36,7 +36,7 @@ class Client:
 
             return ssh
         except Exception, e:
-            print escape_color('[-] Error Connecting', "red")
+            print Fore.RED + '[-] Error Connecting' + Fore.RESET
             print e
 
     def send_command(self, cmd):
@@ -49,7 +49,7 @@ class Client:
 def botnet_command(command, botnet):
     for client in botnet:
         output = client.send_command(command)
-        print escape_color('[*] Output from ' + client.host, "green")
+        print Fore.GREEN + '[*] Output from ' + client.host + Fore.RESET
         print '[+] ' + output + '\n'
 
 
@@ -68,5 +68,6 @@ def main():
 
 
 if __name__ == '__main__':
+    init()
     docopt(__doc__, version=0.1)
     main()
