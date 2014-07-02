@@ -5,7 +5,7 @@
     Searches through each host for an open 445 and if they have it then
     add that host to a metasploit config file that attacks smb on 445,
     and sends back a meterpreter shell to lhost on lport. If a password
-    file is provided, try brute forcing it as well.
+    file is provided, try brute forcing it if the exploit does not work.
 
     If list of hosts is not provided, the hosts are read from the stdin
 
@@ -22,7 +22,6 @@
         --version       Display the version of this program
 
     Examples:
-        ./metasploit_smb.py 10.0.0.1 127.0.0.1 1337
         ./metasploit_smb.py 10.0.0.2,10.0.0.1 127.0.0.1 1337 worldlist/general/common.txt
         ./fping.py subnet 10.0.1.0/24 | ./metasploit_smb.py 127.0.0.1 1337
 """

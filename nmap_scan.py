@@ -9,21 +9,21 @@
     Don't be a moron, please don't use this for something illegal.
 
     Usage:
-        nmap_scan.py [-v] <ports>
-        nmap_scan.py [-v] <host> <ports>
+        nmap_scan.py host [-v] <host> <ports>...
+        nmap_scan.py stdin [-v] <ports>...
         nmap_scan.py -h | --help
         nmap_scan.py --version
 
     Options:
-        -v              verbose option, use this if you want to see closed ports and failed connections
-        -h, --help      Display this message
-        --version       Display the version of this program
-        -a, --async     Send requests asynchronously (faster but straining on server)
+        -v                  verbose option, use this if you want to see closed ports and failed connections
+        -h, --help          Display this message
+        --version           Display the version of this program
+        -a, --async         Send requests asynchronously (faster but straining on server)
 
     Examples:
-        ./nmap_scan.py localhost 21,22,80,443
-        ./nmap_scan.py localhost,10.0.0.1 21,22,80,443
-        ./fping 10.0.1.1/24 | ./nmap_scan.py 21,22,80,443
+        ./nmap_scan.py host 10.0.1.1 21 22 80 443
+        ./nmap_scan.py host -v 10.0.1.1 21 22 80 443
+        ./fping 10.0.1.1/24 | ./nmap_scan.py stdin 21 22 80 443
 """
 
 import sys
@@ -50,7 +50,7 @@ def nmap_scan(scanner, host, port, verbose=False):
         return (host, port, state)
     except:
         if verbose:
-            print escape_color("[*] Can't connect to " + host, "red")
+            print escape_color("[-] Can't connect to " + host, "red")
         return False
 
 
@@ -75,10 +75,9 @@ def main(hosts, ports, verbose=False):
 if __name__ == '__main__':
     arguments = docopt(__doc__, version=0.1)
 
-    ports = arguments['<ports>'].split(',')
-
-    if not arguments['<host>']:
+    if arguments['stdin']:
         hosts = []
+        ports = arguments['<ports>']
         for line in sys.stdin:
             clear = line.strip('\r').strip('\n')
             hosts.append(clear)
@@ -88,9 +87,10 @@ if __name__ == '__main__':
         else:
             main(hosts, ports)
     else:
-        hosts = arguments['<host>'].split(',')
+        host = arguments['<host>']
+        ports = arguments['<ports>']
 
         if arguments['-v']:
-            main(hosts, ports, verbose=True)
+            main([host], ports, verbose=True)
         else:
-            main(hosts, ports)
+            main([host], ports)

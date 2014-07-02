@@ -9,8 +9,8 @@
     Don't be a moron, please don't use this for something illegal.
 
     Usage:
-        fping.py list <ips>... [--threads=<threads>]
-        fping.py subnet <ip> [--threads=<threads>]
+        fping.py list <ips>... [--threads=<threads>]/
+        fping.py subnet <subnet> [--threads=<threads>]
         fping.py (-h|--help)
         fping.py --version
 
@@ -38,7 +38,7 @@ if __name__ == '__main__':
     if arguments['list']:
         ips = arguments['<ips>']
     elif arguments['subnet']:
-        ips = list(IPNetwork(arguments['<ip>']))
+        ips = list(IPNetwork(arguments['<subnet>']))
 
     if arguments['--threads']:
         num_threads = int(arguments['--threads'])
