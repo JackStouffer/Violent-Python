@@ -20,6 +20,7 @@
 import os
 from _winreg import OpenKey, QueryValueEx, HKEY_LOCAL_MACHINE
 from docopt import docopt
+from colorama import Fore, init
 
 
 def find_recycled():
@@ -52,13 +53,14 @@ def recycled_files(recycleDir):
         user = sid2user(sid)
         print '[*] Listing Files For User: ' + str(user)
         for file in files:
-            print '[+] Found File: ' + str(file)
+            print Fore.GREEN + '[+] Found File: ' + str(file) + Fore.RESET
 
 
 def main():
-    docopt(__doc__, version=0.1)
     recycledDir = find_recycled()
     recycled_files(recycledDir)
 
 if __name__ == '__main__':
+    init()
+    docopt(__doc__, version=0.1)
     main()
