@@ -1,6 +1,3 @@
-Jack's Super Awesome Security Toolkit for Attractive People
-===========================================================
-
 This is code that I am writing by following the *"Violent Python: A Cookbook for Hackers, Forensic Analysts, Penetration Testers and Security Engineers"* book. The code is not an exact copy because most of the code in the book is very un-pythonic, but they perform roughly the same tasks.
 
 **Using some of these tools on machines that you do not own or have authorization to interact with is illegal and could land you in jail.**
@@ -21,7 +18,7 @@ Individual usage can be found by typing "./program_name.py --help"
 
 ###fping.py
 
-Python replacement for the command line tool because it is broken on osx. Takes an ip list or a subnet and a list of ports and pings each host to see if it is alive.
+Python replacement for the command line too l because it is broken on osx. Takes an ip list or a subnet and a list of ports and pings each host to see if it is alive.
 
 ###ftp.py
 
